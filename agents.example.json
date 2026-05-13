@@ -1,0 +1,4 @@
+[
+  { "name": "Agent A", "role": "Architecture", "cwd": "." },
+  { "name": "Agent B", "role": "Developer", "cwd": "." }
+]
