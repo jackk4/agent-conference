@@ -58,6 +58,7 @@ export function stripThinkTags(text: string): string {
   return cleaned.trim();
 }
 
+
 export function debateTurn(agent: AgentConfig, transcript: string): string {
   return `\
 Here is the conversation so far:

@@ -7,7 +7,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "start": "npm run build && caffeinate -i node dist/orchestrator.js",
+    "start": "npm run build && node dist/orchestrator.js",
     "dev": "ts-node src/orchestrator.ts"
   },
   "dependencies": {

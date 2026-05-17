@@ -1,0 +1,214 @@
+[
+    {
+        "name": "Accountant",
+        "role": "Accountant"
+    },
+    {
+        "name": "Artist",
+        "role": "Artist"
+    },
+    {
+        "name": "Auto Mechanic",
+        "role": "Auto-Mechanic"
+    },
+    {
+        "name": "Bus Driver",
+        "role": "Bus-Driver"
+    },
+    {
+        "name": "Chef",
+        "role": "Chef"
+    },
+    {
+        "name": "Childcare Worker",
+        "role": "Childcare-Worker"
+    },
+    {
+        "name": "College Student",
+        "role": "College-Student"
+    },
+    {
+        "name": "Construction Worker",
+        "role": "Construction-Worker"
+    },
+    {
+        "name": "Dentist",
+        "role": "Dentist"
+    },
+    {
+        "name": "Doctor",
+        "role": "Doctor"
+    },
+    {
+        "name": "Economist",
+        "role": "Economist"
+    },
+    {
+        "name": "Elderly Care Worker",
+        "role": "Elderly-Care-Worker"
+    },
+    {
+        "name": "Electrician",
+        "role": "Electrician"
+    },
+    {
+        "name": "Entrepreneur",
+        "role": "Entrepreneur"
+    },
+    {
+        "name": "Environmental Scientist",
+        "role": "Environmental-Scientist"
+    },
+    {
+        "name": "Factory Worker",
+        "role": "Factory-Worker"
+    },
+    {
+        "name": "Farmer",
+        "role": "Farmer"
+    },
+    {
+        "name": "Firefighter",
+        "role": "Firefighter"
+    },
+    {
+        "name": "Flight Attendant",
+        "role": "Flight-Attendant"
+    },
+    {
+        "name": "Gig Worker",
+        "role": "Gig-Worker"
+    },
+    {
+        "name": "Hairstylist",
+        "role": "Hairstylist"
+    },
+    {
+        "name": "High School Student",
+        "role": "High-School-Student"
+    },
+    {
+        "name": "Historian",
+        "role": "Historian"
+    },
+    {
+        "name": "Homeschooling Parent",
+        "role": "Homeschooling-Parent"
+    },
+    {
+        "name": "Hotel Worker",
+        "role": "Hotel-Worker"
+    },
+    {
+        "name": "Immigrant",
+        "role": "Immigrant"
+    },
+    {
+        "name": "Journalist",
+        "role": "Journalist"
+    },
+    {
+        "name": "Lawyer",
+        "role": "Lawyer"
+    },
+    {
+        "name": "Librarian",
+        "role": "Librarian"
+    },
+    {
+        "name": "Local Politician",
+        "role": "Local-Politician"
+    },
+    {
+        "name": "Military Veteran",
+        "role": "Military-Veteran"
+    },
+    {
+        "name": "Nonprofit Worker",
+        "role": "Nonprofit-Worker"
+    },
+    {
+        "name": "Nurse",
+        "role": "Nurse"
+    },
+    {
+        "name": "Personal Trainer",
+        "role": "Personal-Trainer"
+    },
+    {
+        "name": "Pharmacist",
+        "role": "Pharmacist"
+    },
+    {
+        "name": "Police Officer",
+        "role": "Police-Officer"
+    },
+    {
+        "name": "Postal Worker",
+        "role": "Postal-Worker"
+    },
+    {
+        "name": "Public Health Official",
+        "role": "Public-Health-Official"
+    },
+    {
+        "name": "Real Estate Agent",
+        "role": "Real-Estate-Agent"
+    },
+    {
+        "name": "Religious Leader",
+        "role": "Religious-Leader"
+    },
+    {
+        "name": "Research Scientist",
+        "role": "Research-Scientist"
+    },
+    {
+        "name": "Retail Worker",
+        "role": "Retail-Worker"
+    },
+    {
+        "name": "Retiree",
+        "role": "Retiree"
+    },
+    {
+        "name": "Single Parent",
+        "role": "Single-Parent"
+    },
+    {
+        "name": "Small Business Owner",
+        "role": "Small-Business-Owner"
+    },
+    {
+        "name": "Social Worker",
+        "role": "Social-Worker"
+    },
+    {
+        "name": "Stay At Home Parent",
+        "role": "Stay-At-Home-Parent"
+    },
+    {
+        "name": "Teacher",
+        "role": "Teacher"
+    },
+    {
+        "name": "Therapist",
+        "role": "Therapist"
+    },
+    {
+        "name": "Truck Driver",
+        "role": "Truck-Driver"
+    },
+    {
+        "name": "Union Worker",
+        "role": "Union-Worker"
+    },
+    {
+        "name": "Urban Planner",
+        "role": "Urban-Planner"
+    },
+    {
+        "name": "Veterinarian",
+        "role": "Veterinarian"
+    }
+]
