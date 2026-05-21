@@ -19,31 +19,6 @@ export async function promptLine(question: string, defaultValue?: string): Promi
   }
 }
 
-async function promptChoice<T extends string>(
-  question: string,
-  choices: { label: string; value: T; hint?: string }[]
-): Promise<T> {
-  console.log(`\n${C.cyan}?${C.reset} ${question}`);
-  choices.forEach((c, i) => {
-    const hint = c.hint ? ` ${C.dim}— ${c.hint}${C.reset}` : "";
-    console.log(`  ${C.bold}${i + 1})${C.reset} ${c.label}${hint}`);
-  });
-
-  while (true) {
-    const rl = createInterface({ input: process.stdin, output: process.stdout });
-    let raw: string;
-    try {
-      raw = (await rl.question(`  ${C.dim}Enter number or name:${C.reset} `)).trim().toLowerCase();
-    } finally {
-      rl.close();
-    }
-    const byIndex = choices[parseInt(raw, 10) - 1];
-    if (byIndex) return byIndex.value;
-    const byValue = choices.find((c) => c.value.toLowerCase() === raw || c.label.toLowerCase() === raw);
-    if (byValue) return byValue.value;
-    console.log(`  ${C.yellow}Please enter a number (1–${choices.length}) or a listed name.${C.reset}`);
-  }
-}
 
 async function listOllamaModels(url: string): Promise<string[]> {
   try {
@@ -255,6 +230,43 @@ export async function promptSettings(
 
     return { provider, ollamaModel, maxRounds };
   }
+}
+
+
+export async function promptLogFileSelect(): Promise<string | null> {
+  let files: string[];
+  try {
+    files = fs
+      .readdirSync(LOG_DIR)
+      .filter((f) => f.endsWith(".md"))
+      .sort()
+      .reverse();
+  } catch {
+    console.log(`\n${C.dim}No logs directory found.${C.reset}`);
+    return null;
+  }
+
+  if (files.length === 0) {
+    console.log(`\n${C.dim}No log files found in ${LOG_DIR}${C.reset}`);
+    return null;
+  }
+
+  const choice = await select({
+    message: "Select a conference log to summarize",
+    choices: [
+      ...files.map((f) => {
+        const date = f.slice(0, 10);
+        const slug = f
+          .replace(/^\d{4}-\d{2}-\d{2}T[\d-]+Z_/, "")
+          .replace(/\.md$/, "")
+          .replace(/-/g, " ");
+        return { name: `${slug}  ${C.dim}(${date})${C.reset}`, value: path.join(LOG_DIR, f) };
+      }),
+      { name: "← Go back", value: "__back__" },
+    ],
+  });
+
+  return choice === "__back__" ? null : choice;
 }
 
 export function showRecentLogs(n = 8): void {

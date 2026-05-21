@@ -3,10 +3,10 @@ import * as path from "node:path";
 import select from "@inquirer/select";
 import { Provider } from "./types";
 import { agentColor, C } from "./colors";
-import { parseArgs, printUsage, DEFAULT_MAX_ROUNDS } from "./cli";
-import { promptLine, promptAgentSetup, promptSettings, promptOllamaModel, showRecentLogs } from "./interactive";
+import { parseArgs, printUsage } from "./cli";
+import { promptLine, promptAgentSetup, promptSettings, promptOllamaModel, showRecentLogs, promptLogFileSelect } from "./interactive";
 import { ensureOllamaRunning } from "./agents";
-import { runConversation } from "./conversation";
+import { runConversation, summarizeConference } from "./conversation";
 
 async function main() {
   const args = parseArgs();
@@ -70,11 +70,12 @@ async function main() {
     const action = await select({
       message: "Main menu",
       choices: [
-        { name: "Start a conversation", value: "start"        },
-        { name: "Manage participants",  value: "participants" },
-        { name: "Settings",             value: "settings"     },
-        { name: "View recent logs",     value: "logs"         },
-        { name: "Exit",                 value: "exit"         },
+        { name: "Start a conversation",  value: "start"       },
+        { name: "Manage participants",   value: "participants" },
+        { name: "Settings",              value: "settings"    },
+        { name: "Summarize conference",  value: "summarize"   },
+        { name: "View recent logs",      value: "logs"        },
+        { name: "Exit",                  value: "exit"        },
       ],
     });
 
@@ -96,8 +97,39 @@ async function main() {
       continue;
     }
 
+
     if (action === "logs") {
       showRecentLogs();
+      continue;
+    }
+
+    if (action === "summarize") {
+      if (!provider) {
+        console.log(`\n${C.yellow}A provider must be configured before summarizing.${C.reset}`);
+        const updated = await promptSettings({ provider, ollamaModel, ollamaUrl, maxRounds });
+        provider    = updated.provider;
+        ollamaModel = updated.ollamaModel;
+        maxRounds   = updated.maxRounds;
+        if (!provider) continue;
+      }
+
+      if (provider === "ollama" && !ollamaModel) {
+        await ensureOllamaRunning(ollamaUrl);
+        const chosen = await promptOllamaModel(ollamaUrl);
+        if (chosen === null) continue;
+        ollamaModel = chosen;
+      }
+
+      const logPath = await promptLogFileSelect();
+      if (!logPath) continue;
+
+      await summarizeConference({
+        logPath,
+        provider: provider as import("./types").Provider,
+        ollamaModel: ollamaModel ?? "",
+        ollamaUrl,
+        timeoutMs: args.timeoutMs,
+      });
       continue;
     }
 

@@ -1,5 +1,6 @@
+import * as fs from "node:fs";
 import * as path from "node:path";
-import { ConversationParams, IAgentSession } from "./types";
+import { ConversationParams, IAgentSession, Provider } from "./types";
 import { agentColor, C, header, divider } from "./colors";
 import { Logger, TokenTracker } from "./logger";
 import { primer, debateTurn, extractAgree } from "./prompts";
@@ -24,10 +25,11 @@ export async function runConversation(params: ConversationParams): Promise<void>
     : `copilot (${COPILOT_BIN})`;
   console.log(`${C.dim}Agents: ${config.agents.length} | Max rounds: ${config.maxRounds} | Provider: ${providerNote}${C.reset}`);
 
+  const modelLabel = provider === "ollama" ? ollamaModel : `copilot (${COPILOT_BIN})`;
   config.agents.forEach((a, i) => {
     const cwdNote = a.cwd ? ` → ${path.resolve(a.cwd)}` : "";
-    const roleNote = a.role ? ` (${a.role})` : "";
-    console.log(`  ${agentColor(i)}${C.bold}${a.name}${C.reset}${cwdNote}${roleNote}`);
+    const roleNote = a.role ? ` | role: ${a.role}` : "";
+    console.log(`  ${agentColor(i)}${C.bold}${a.name}${C.reset}${roleNote} | model: ${C.dim}${modelLabel}${C.reset}${cwdNote}`);
   });
 
   logger.writeHeader(question, config.agents);
@@ -215,4 +217,89 @@ Do not editorialize — just summarise what each agent actually said.`;
   }
 
   await Promise.all(sessions.map((s) => s.close()));
+}
+
+
+function parseLogSections(content: string): { question: string; outcome: string; synopsis: string } {
+  const questionMatch = content.match(/\*\*Question:\*\*\s*(.+)/);
+  const question = questionMatch?.[1]?.trim() ?? "";
+
+  let outcome = "";
+  let synopsis = "";
+
+  const parts = content.split(/\n(?=## )/);
+  for (const part of parts) {
+    if (/^## Outcome/.test(part)) {
+      outcome = part.replace(/^## Outcome\n/, "").replace(/\n---\s*$/, "").trim();
+    } else if (/^## Agent Findings Synopsis/.test(part)) {
+      synopsis = part.replace(/^## Agent Findings Synopsis\n/, "").trim();
+    }
+  }
+
+  return { question, outcome, synopsis };
+}
+
+export async function summarizeConference(params: {
+  logPath: string;
+  provider: Provider;
+  ollamaModel: string;
+  ollamaUrl: string;
+  timeoutMs: number;
+}): Promise<void> {
+  const { logPath, provider, ollamaModel, ollamaUrl, timeoutMs } = params;
+
+  const content = fs.readFileSync(logPath, "utf8");
+  const { question, outcome, synopsis } = parseLogSections(content);
+
+  if (!question) {
+    console.log(`${C.yellow}⚠ Could not extract question from log file.${C.reset}`);
+    return;
+  }
+
+  const hasSynopsis = synopsis.length > 0;
+
+  const prompt = `You are reviewing the results of a multi-agent conference discussion. Synthesize the discussion and provide a clear, direct answer to the original question.
+
+**Original Question:**
+${question}
+
+**Discussion Outcome:**
+${outcome || "(no outcome recorded)"}
+
+${hasSynopsis ? `**Agent Findings Synopsis:**\n${synopsis}` : ""}
+
+Provide a structured summary that directly answers the question:
+- **Direct Answer** — a concise, definitive answer
+- **Key Points** — the most important insights the agents identified
+- **Concerns & Caveats** — any important risks or limitations raised
+- **Recommendations** — actionable next steps, if applicable
+
+Be direct. Do not describe the discussion process — only deliver the answer.`;
+
+  console.log(`\n${C.bold}${C.cyan}⚡ Conference Summary${C.reset}`);
+  console.log(`${C.bold}Q:${C.reset} ${question}`);
+  divider();
+
+  if (provider === "ollama") await ensureOllamaRunning(ollamaUrl);
+
+  const tracker = new TokenTracker();
+  const session = await createAgent(
+    { name: "Summarizer" },
+    0,
+    tracker,
+    timeoutMs,
+    provider,
+    { model: ollamaModel, url: ollamaUrl }
+  );
+
+  try {
+    header("Summary", session.color);
+    await session.send(prompt, "Summary");
+  } finally {
+    await session.close();
+  }
+
+  divider();
+  tracker.printSummary();
+  divider();
 }
