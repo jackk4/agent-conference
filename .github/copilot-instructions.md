@@ -4,12 +4,14 @@
 
 ```bash
 npm install           # install dependencies
+npm test              # run unit tests
+npm run check         # run tests and compile TypeScript
 npm run dev "<question>"   # run via ts-node (development)
 npm run build         # compile TypeScript → dist/
 npm start             # build + run compiled output
 ```
 
-There are no tests or lint scripts. CI only runs `npm run build`.
+CI runs `npm run check`, which executes the unit tests before compiling TypeScript.
 
 ## Architecture
 

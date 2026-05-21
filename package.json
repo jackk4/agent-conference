@@ -7,7 +7,9 @@
   },
   "scripts": {
     "build": "tsc",
-    "start": "npm run build && node dist/orchestrator.js",
+    "test": "node --require ts-node/register --test test/**/*.test.ts",
+    "check": "npm run test && npm run build",
+    "start": "npm run build && caffeinate -i node dist/orchestrator.js",
     "dev": "ts-node src/orchestrator.ts"
   },
   "dependencies": {

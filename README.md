@@ -14,7 +14,7 @@ Each agent runs as an independent `copilot` process via the [Agent Client Protoc
 ## Prerequisites
 
 - [GitHub Copilot CLI](https://docs.github.com/copilot/concepts/agents/about-copilot-cli) installed and authenticated
-- Node.js 18+
+- Node.js 20+
 
 ## Installation
 
@@ -132,6 +132,20 @@ To compile to JavaScript and run without `ts-node`:
 ```bash
 npm run build
 node dist/orchestrator.js --config agents.json "Your question"
+```
+
+## Development checks
+
+Run the same checks used by CI:
+
+```bash
+npm run check
+```
+
+This runs the Node.js unit tests and then compiles the TypeScript project. To run only the unit tests:
+
+```bash
+npm test
 ```
 
 ## Example output
